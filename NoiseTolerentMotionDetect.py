@@ -45,10 +45,7 @@ cap.set(cv2.CAP_PROP_FRAME_WIDTH,width)
 cap.set(cv2.CAP_PROP_FRAME_HEIGHT,height)
 
 bg_buffer=BgExtract(width,height,scale_down)
-# print(len(bg_buffer.buffer))
-# last_frame=np.zeros((height//scale_down,width//scale_down),np.uint8)
-
-# cv2.imshow("background",bg)
+cv2.imshow("background",bg)
 
 while True:
     _,frame=cap.read()
@@ -62,9 +59,6 @@ while True:
     absdifference=cv2.absdiff(gray,bg_buffer.output_frame())
     _,maskabs=cv2.threshold(absdifference,15,255,THRESH_BINARY)
 
-    # dilated_mask=cv2.dilate(maskabs,None,iterations=3)
-    # cv2.imshow("Thresh",mask)
-
     contours,_=cv2.findContours(maskabs,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
     for i in contours:
         if cv2.contourArea(i) < 150:
@@ -73,8 +67,6 @@ while True:
         x,y,w,h=cv2.boundingRect(i)
         x,y,w,h=x*scale_down,y*scale_down,w*scale_down,h*scale_down
         cv2.rectangle(frame,(x,y),(x+w,y+h),(0,255,0))
-
-    # scale_up=cv2.resize(maskabs,(width,height))
 
     cv2.imshow("abs",maskabs)
     cv2.imshow("Actual",frame)
